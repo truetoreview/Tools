@@ -1,0 +1,70 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Awesome Tools - Homepage</title>
+        <!-- Tailwind CSS CDN for easy styling -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            body {
+                font-family: 'Inter', sans-serif;
+                background-color: #f0f2f5;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                padding: 20px;
+                box-sizing: border-box;
+                color: #333;
+            }
+            .container {
+                background-color: #ffffff;
+                border-radius: 15px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+                padding: 30px;
+                width: 100%;
+                max-width: 600px;
+                text-align: center;
+            }
+            .tool-list {
+                list-style: none;
+                padding: 0;
+                margin-top: 30px;
+            }
+            .tool-list li {
+                margin-bottom: 15px;
+            }
+            .tool-list a {
+                display: block;
+                background-color: #4299e1; /* Blue-500 */
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                font-size: 1.2em;
+                font-weight: bold;
+                text-decoration: none;
+                transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .tool-list a:hover {
+                background-color: #3182ce; /* Blue-600 */
+                transform: translateY(-2px);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="text-4xl font-extrabold text-gray-800 mb-6">Welcome to My Tool Website!</h1>
+            <p class="text-lg text-gray-600 mb-8">Choose a tool from the list below:</p>
+
+            <ul class="tool-list">
+                <li><a href="gold-converter.html">Gold Measurement Converter</a></li>
+                <!-- Add more tools here as you create them -->
+                <!-- <li><a href="another-tool.html">Another Cool Tool</a></li> -->
+            </ul>
+        </div>
+    </body>
+    </html>
+    
