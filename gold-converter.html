@@ -1,0 +1,237 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gold Measurement Converter</title>
+        <!-- Tailwind CSS CDN for easy styling -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            /* Custom styles for Inter font and general layout */
+            body {
+                font-family: 'Inter', sans-serif;
+                background-color: #f0f2f5;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                padding: 20px;
+                box-sizing: border-box;
+            }
+            .container {
+                background-color: #ffffff;
+                border-radius: 15px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+                padding: 30px;
+                width: 100%;
+                max-width: 500px;
+                text-align: center;
+            }
+            .input-group {
+                display: flex;
+                align-items: center;
+                margin-bottom: 20px;
+                background-color: #f9fafb;
+                border-radius: 10px;
+                padding: 10px;
+                box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+            }
+            .input-group input {
+                flex-grow: 1;
+                border: none;
+                outline: none;
+                background: transparent;
+                padding: 10px;
+                font-size: 1.1em;
+                color: #333;
+            }
+            .input-group select {
+                border: none;
+                outline: none;
+                background-color: #e2e8f0;
+                border-radius: 8px;
+                padding: 10px 15px;
+                font-size: 1em;
+                cursor: pointer;
+                appearance: none; /* Remove default arrow */
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 10px center;
+                background-size: 1.2em;
+                color: #4a5568;
+            }
+            .result-box {
+                background-color: #ecfdf5;
+                border: 1px solid #a7f3d0;
+                border-radius: 10px;
+                padding: 15px;
+                margin-top: 25px;
+                text-align: left;
+                font-size: 1.1em;
+                color: #065f46;
+                min-height: 80px; /* Ensure consistent height */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+            }
+            .result-box p {
+                margin: 5px 0;
+                font-weight: 500;
+            }
+            .result-box span {
+                font-weight: 600;
+                color: #047857;
+            }
+            .swap-button {
+                background-color: #4299e1; /* Blue-500 */
+                color: white;
+                padding: 10px 15px;
+                border-radius: 8px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: background-color 0.2s ease-in-out;
+                margin-top: 10px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .swap-button:hover {
+                background-color: #3182ce; /* Blue-600 */
+            }
+            .swap-button svg {
+                width: 20px;
+                height: 20px;
+            }
+            .back-button {
+                background-color: #6b7280; /* Gray-500 */
+                color: white;
+                padding: 10px 15px;
+                border-radius: 8px;
+                font-weight: bold;
+                text-decoration: none;
+                transition: background-color 0.2s ease-in-out;
+                margin-top: 20px;
+                display: inline-block;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .back-button:hover {
+                background-color: #4b5563; /* Gray-600 */
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="text-3xl font-extrabold text-gray-800 mb-6">Gold Converter</h1>
+
+            <div class="input-group">
+                <input type="number" id="inputValue" placeholder="Enter value" class="text-gray-700" value="1">
+                <select id="inputUnit" class="text-gray-700">
+                    <option value="gram">Gram (g)</option>
+                    <option value="vori">Vori (ভরি)</option>
+                    <option value="tola">Tola</option>
+                    <option value="ana">Ana</option>
+                </select>
+            </div>
+
+            <button id="swapButton" class="swap-button">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+                Swap Units
+            </button>
+
+            <div class="input-group mt-6">
+                <input type="number" id="outputValue" placeholder="Converted value" class="text-gray-700" readonly>
+                <select id="outputUnit" class="text-gray-700">
+                    <option value="vori">Vori (ভরি)</option>
+                    <option value="gram">Gram (g)</option>
+                    <option value="tola">Tola</option>
+                    <option value="ana">Ana</option>
+                </select>
+            </div>
+
+            <div id="resultBox" class="result-box">
+                <p>Enter a value and select units to convert.</p>
+            </div>
+
+            <a href="index.html" class="back-button">Back to Homepage</a>
+        </div>
+
+        <script>
+            // Get references to HTML elements
+            const inputValueElement = document.getElementById('inputValue');
+            const inputUnitElement = document.getElementById('inputUnit');
+            const outputValueElement = document.getElementById('outputValue');
+            const outputUnitElement = document.getElementById('outputUnit');
+            const resultBoxElement = document.getElementById('resultBox');
+            const swapButton = document.getElementById('swapButton');
+
+            // Define conversion rates relative to grams
+            // 1 Vori = 11.664 grams
+            // 1 Tola = 11.664 grams (commonly equivalent to Vori in many South Asian regions)
+            // 1 Ana = 0.729 grams (11.664 / 16)
+            const conversionRates = {
+                'gram': 1,
+                'vori': 11.664,
+                'tola': 11.664, // Assuming 1 Tola = 1 Vori in this context
+                'ana': 11.664 / 16
+            };
+
+            /**
+             * Performs the gold measurement conversion based on user input.
+             */
+            function convertGold() {
+                const inputValue = parseFloat(inputValueElement.value);
+                const inputUnit = inputUnitElement.value;
+                const outputUnit = outputUnitElement.value;
+
+                // Check for invalid input
+                if (isNaN(inputValue) || inputValue < 0) {
+                    outputValueElement.value = '';
+                    resultBoxElement.innerHTML = '<p class="text-red-700">Please enter a valid positive number.</p>';
+                    return;
+                }
+
+                // Convert input value to grams first
+                const valueInGrams = inputValue * conversionRates[inputUnit];
+
+                // Convert grams to the desired output unit
+                const outputValue = valueInGrams / conversionRates[outputUnit];
+
+                // Display the result
+                outputValueElement.value = outputValue.toFixed(4); // Display with 4 decimal places for precision
+                resultBoxElement.innerHTML = `
+                    <p>${inputValue} ${inputUnit} is equal to:</p>
+                    <p><span class="text-2xl">${outputValue.toFixed(4)}</span> ${outputUnit}</p>
+                `;
+            }
+
+            /**
+             * Swaps the selected input and output units.
+             */
+            function swapUnits() {
+                const currentInputUnit = inputUnitElement.value;
+                const currentOutputUnit = outputUnitElement.value;
+
+                inputUnitElement.value = currentOutputUnit;
+                outputUnitElement.value = currentInputUnit;
+
+                // Re-run conversion after swapping
+                convertGold();
+            }
+
+            // Add event listeners for real-time conversion
+            inputValueElement.addEventListener('input', convertGold);
+            inputUnitElement.addEventListener('change', convertGold);
+            outputUnitElement.addEventListener('change', convertGold);
+            swapButton.addEventListener('click', swapUnits);
+
+            // Initial conversion on page load
+            window.onload = convertGold;
+        </script>
+    </body>
+    </html>
+    
