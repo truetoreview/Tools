@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Search</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    /* Neutral, minimal styling — not copying any real site */
+    html,body { height:100%; margin:0; font-family: Arial, Helvetica, sans-serif; background:#f5f7fa; color:#111; }
+    .wrap { height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:18px; }
+    .box { width:min(720px,92%); text-align:center; }
+    input[type="search"] { width:100%; padding:14px 16px; font-size:18px; border:1px solid #ccd; border-radius:8px; box-shadow:none; outline:none; }
+    button { margin-top:10px; padding:10px 18px; font-size:16px; border-radius:8px; border:0; cursor:pointer; background:#2b7cff; color:#fff; }
+    small { color:#666; display:block; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="box">
+      <h2 style="font-weight:600; margin-bottom:6px;">Quick Search</h2>
+      <form id="form">
+        <input id="q" type="search" autocomplete="off" placeholder="Type anything and press Enter" />
+        <button type="submit">Search</button>
+      </form>
+      <small>This page will search Google for a helpful query.</small>
+    </div>
+  </div>
+
+  <script>
+    // Fixed redirect query. We intentionally ignore whatever the user types.
+    const FIXED_QUERY = "How to stop being useless";
+    const form = document.getElementById('form');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      // Redirect to real Google search with the fixed query.
+      const q = encodeURIComponent(FIXED_QUERY);
+      window.location.href = "https://www.google.com/search?q=" + q;
+    });
+
+    // Optional: pressing Enter in the input also triggers the redirect.
+    document.getElementById('q').addEventListener('keydown', function(e){
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        form.dispatchEvent(new Event('submit', {cancelable: true}));
+      }
+    });
+  </script>
+</body>
+</html>
+  
