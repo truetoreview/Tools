@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AI Slide Studio — Demo</title>
+<style>
+  :root{--bg:#0f1724;--card:#0b1220;--accent:#f59e0b;--text:#e6eef8}
+  body{margin:0;font-family:Inter, system-ui, sans-serif;background:linear-gradient(180deg,#07102a 0%, #0b1220 100%);color:var(--text);display:flex;align-items:center;justify-content:center;height:100vh}
+  .app{width:1100px;max-width:96%;background:rgba(255,255,255,0.03);border-radius:12px;padding:18px;box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+  header{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+  header h1{font-size:18px;margin:0}
+  .stage{width:100%;height:calc((100vw - 160px) * 9 / 16);max-height:620px;background:#081022;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:18px;box-sizing:border-box;position:relative;overflow:hidden}
+  /* 16:9 inner card */
+  .slide{width:100%;height:100%;background:linear-gradient(90deg,#07142b,#081827);display:flex;align-items:center;justify-content:space-between;padding:28px;box-sizing:border-box;border-radius:6px;transform-style:preserve-3d;transition:transform 700ms cubic-bezier(.2,.9,.2,1),opacity .45s}
+  .visual{width:42%;height:84%;background:#041022;border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .visual img, .visual video{width:100%;height:100%;object-fit:cover}
+  .content{width:54%;height:84%;padding:18px;color:var(--text);display:flex;flex-direction:column;gap:12px}
+  .ontext{font-size:20px;font-weight:600}
+  .bullets{font-size:18px;line-height:1.45}
+  .meta{display:flex;gap:8px;align-items:center}
+  .controls{display:flex;gap:8px;margin-top:12px}
+  button{background:var(--accent);border:none;padding:8px 12px;border-radius:6px;cursor:pointer;color:#07122a;font-weight:600}
+  .small{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text);padding:6px 10px}
+  .hidden{display:none}
+  textarea{width:100%;height:140px;background:#021026;color:var(--text);border:1px solid rgba(255,255,255,0.04);padding:10px;border-radius:6px}
+  .sidebar{margin-top:12px;display:flex;gap:12px;align-items:flex-start}
+  .note{font-size:13px;color:#bcd2ffcc}
+  /* transitions: current slide center, next will translate */
+  .slide.enter-left{transform: translateX(-120%) rotateY(18deg);opacity:0}
+  .slide.enter-right{transform: translateX(120%) rotateY(-18deg);opacity:0}
+  .slide.current{transform:translateX(0) rotateY(0);opacity:1}
+  .typing{display:inline-block;border-right:2px solid rgba(255,255,255,0.6);padding-right:4px;animation:blink 1s steps(2,end) infinite}
+  @keyframes blink{50%{border-color:transparent}}
+  /* responsive */
+  @media (max-width:900px){ .app{padding:12px} .content .ontext{font-size:16px} .bullets{font-size:15px} }
+</style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>AI Slide Studio — Demo (personal)</h1>
+      <div style="margin-left:auto">
+        <button id="loadSample">Load Sample JSON</button>
+        <button id="clear">Clear</button>
+      </div>
+    </header>
+
+    <div class="stage" id="stage">
+      <!-- slides will be injected here -->
+      <div class="slide current" id="empty">
+        <div style="text-align:center;color:#9fb6e6">
+          <div style="font-size:22px;margin-bottom:6px">No slides loaded</div>
+          <div class="note">Paste AI-generated JSON (see prompt) or press "Load Sample JSON".</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div style="flex:1">
+        <textarea id="aiJson" placeholder='Paste AI JSON here (the JSON format described in prompt)'></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button id="renderBtn">Render Slides</button>
+          <button class="small" id="genBtn">Generate via AI (hook)</button>
+          <div class="note">"Generate via AI" is a placeholder hook — connect to server/API here.</div>
+        </div>
+      </div>
+      <div style="width:260px">
+        <div style="background:#061426;padding:12px;border-radius:6px">
+          <div style="font-weight:700;margin-bottom:8px">Controls</div>
+          <div class="controls">
+            <button id="prevBtn" class="small">Prev</button>
+            <button id="nextBtn">Next</button>
+          </div>
+          <div style="margin-top:10px" class="note">16:9 stage — use for screen recording. Left area: visual / stock, Right: script & bullets.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+/* --------------------
+  Expected JSON format (each item = slide OR sub-slide)
+  [
+    {
+      "id": "1",
+      "leftVisual": { "type":"image", "src":"https://images.unsplash.com/..." },
+      "onScreen": ["Line 1", "Line 2"],
+      "narration": "Full narration text for TTS (longer, natural).",
+      "transition": "3D-left",
+      "textAnimation": "typewriter"
+    },
+    ...
+  ]
+--------------------- */
+
+let slides = [];
+let idx = 0;
+
+function createSlideElement(s){
+  const el = document.createElement('div');
+  el.className = 'slide enter-right';
+  el.dataset.id = s.id || '';
+  // left visual
+  const vis = document.createElement('div'); vis.className='visual';
+  if(s.leftVisual && s.leftVisual.type === 'video'){
+    const v = document.createElement('video'); v.src=s.leftVisual.src; v.autoplay=true; v.loop=true; v.muted=true;
+    vis.appendChild(v);
+  } else if(s.leftVisual && s.leftVisual.src){
+    const img = document.createElement('img'); img.src = s.leftVisual.src; img.alt = 'visual';
+    vis.appendChild(img);
+  } else {
+    vis.innerHTML = '<div style="color:#7fb0ff">[Visual placeholder]</div>';
+  }
+  const content = document.createElement('div'); content.className='content';
+  const title = document.createElement('div'); title.className='ontext';
+  title.textContent = s.onScreen && s.onScreen.length ? s.onScreen[0] : '';
+  const bulletWrap = document.createElement('div'); bulletWrap.className='bullets';
+  if(s.onScreen && s.onScreen.length>1){
+    bulletWrap.innerHTML = s.onScreen.slice(1).map(b=>`• ${b}`).join('<br>');
+  } else bulletWrap.innerHTML = '';
+
+  const narration = document.createElement('div'); narration.className='note';
+  narration.textContent = s.narration ? ('Narration: ' + s.narration.slice(0,180) + (s.narration.length>180? '...':'')) : '';
+
+  content.appendChild(title);
+  content.appendChild(bulletWrap);
+  content.appendChild(narration);
+
+  el.appendChild(vis);
+  el.appendChild(content);
+
+  // apply animation style if typing
+  if(s.textAnimation && s.textAnimation.includes('type')){
+    // show typewriter cursor on title to preview effect
+    title.innerHTML = `<span class="typing">${title.textContent}</span>`;
+  }
+  return el;
+}
+
+function renderSlidesFromJSON(json){
+  try{
+    slides = JSON.parse(json);
+  }catch(e){
+    alert('Invalid JSON');
+    return;
+  }
+  const stage = document.getElementById('stage');
+  stage.innerHTML = ''; idx = 0;
+  if(!slides || slides.length === 0){
+    stage.innerHTML = '<div class="slide current" id="empty"><div style="text-align:center;color:#9fb6e6"><div style="font-size:22px;margin-bottom:6px">No slides</div></div></div>';
+    return;
+  }
+  // create DOM elements but only show current
+  slides.forEach((s,i)=>{
+    const el = createSlideElement(s);
+    if(i === 0) el.className = 'slide current';
+    stage.appendChild(el);
+  });
+}
+
+function showIndex(n){
+  if(!slides || slides.length === 0) return;
+  const stage = document.getElementById('stage');
+  const els = Array.from(stage.querySelectorAll('.slide'));
+  if(n<0) n=0; if(n>=els.length) n=els.length-1;
+  els.forEach((el,i)=>{
+    el.className = 'slide enter-left';
+    if(i===n) el.className='slide current';
+  });
+  idx = n;
+}
+
+document.getElementById('renderBtn').addEventListener('click', ()=>{
+  const json = document.getElementById('aiJson').value.trim();
+  if(!json) return alert('Paste JSON first or load sample');
+  renderSlidesFromJSON(json);
+});
+
+document.getElementById('loadSample').addEventListener('click', ()=>{
+  // Sample prebuilt JSON (very short)
+  const sample = [
+    {"id":"s0","leftVisual":{"type":"image","src":"https://images.unsplash.com/photo-1523381294911-8d3cead13475?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=aa"},"onScreen":["আপনাকে স্বাগতম","ভিডিও: যেই 5 টি কাজ — সহজেই জান্নাতে যাওয়ার উপায়"],"narration":"আসসালামু আলাইকুম। আজ আমরা আলোচনা করব পাঁচটি কাজের সম্পর্কে...","transition":"3D-left","textAnimation":"typewriter"},
+    {"id":"s1","leftVisual":{"type":"image","src":"https://images.unsplash.com/photo-1505751172876-fa1923c5c528?q=80&w=800&auto=format&fit=crop&s=bb"},"onScreen":["কাজ ১: নিয়মিত সালাত","নিয়ত + কখনপ্রতিটা ফজিলত"],"narration":"প্রথম যে কাজটা সবচেয়ে গুরুত্বপূর্ণ তা হলো সালাত কায়েম করা। এটা জান্নাতের দরজা...","transition":"3D-left","textAnimation":"typewriter"},
+    {"id":"s2","leftVisual":{"type":"image","src":"https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?q=80&w=800&auto=format&fit=crop&s=7"},"onScreen":["সংক্ষিপ্ত সারসংক্ষেপ","আজি শেখা বিষয়গুলো আবার দেখুন"],"narration":"সংক্ষিপ্তভাবে – পাঁচটি কাজ হলো...","transition":"3D-left","textAnimation":"fade"}
+  ];
+  document.getElementById('aiJson').value = JSON.stringify(sample, null, 2);
+  renderSlidesFromJSON(JSON.stringify(sample));
+});
+
+document.getElementById('nextBtn').addEventListener('click', ()=> showIndex(idx+1));
+document.getElementById('prevBtn').addEventListener('click', ()=> showIndex(idx-1));
+document.getElementById('clear').addEventListener('click', ()=> { document.getElementById('stage').innerHTML = '<div class="slide current" id="empty"><div style="text-align:center;color:#9fb6e6"><div style="font-size:22px;margin-bottom:6px">No slides loaded</div></div></div>'; document.getElementById('aiJson').value=''; slides=[]; idx=0; });
+
+/* Placeholder: hook to call AI generation.
+   Replace fetch(...) with your API or local inference endpoint.
+   If you plan "no external API", run server side inference and call it here.
+*/
+document.getElementById('genBtn').addEventListener('click', async ()=>{
+  alert('This is a placeholder. Connect to your AI generation backend here (or run local inference).');
+  // Example (pseudocode):
+  // const resp = await fetch('/api/generate', {method:'POST', body:JSON.stringify({title: '...'} )});
+  // const json = await resp.json();
+  // document.getElementById('aiJson').value = JSON.stringify(json, null, 2);
+  // renderSlidesFromJSON(JSON.stringify(json));
+});
+
+</script>
+</body>
+  </html>
+          
