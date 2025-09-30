@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation Template Repository</title>
+    <!-- Load Tailwind CSS for utility classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define the font and ensure the body covers the full viewport */
+        body {
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            margin: 0;
+            overflow: auto; /* Allow scrolling if content overflows */
+            
+            /* Base dark background color (Tailwind gray-900) */
+            background-color: #111827; 
+
+            /* ----------------------------------------------------- */
+            /* GRID DEFINITION (Animated Background) */
+            /* ----------------------------------------------------- */
+            
+            /* Create the horizontal and vertical lines using linear gradients */
+            background-image: 
+                /* Horizontal lines (to bottom) */
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                /* Vertical lines (to right) */
+                linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            
+            /* Define the size of each grid cell (50px x 50px) */
+            background-size: 50px 50px; 
+
+            /* Apply the animation for continuous scrolling */
+            animation: grid-scroll 30s linear infinite;
+        }
+
+        /* CSS Keyframe Animation for the Grid Movement */
+        @keyframes grid-scroll {
+            /* Move exactly one cell size to prevent a visual jump */
+            from { background-position: 0 0; }
+            to { background-position: 50px 50px; }
+        }
+
+        /* Main content container ensures it's above the grid */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper flex flex-col items-center">
+
+        <!-- Header Section -->
+        <header class="text-center py-12 max-w-4xl w-full">
+            <h1 class="text-5xl sm:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-4 tracking-tighter">
+                Tools & Animation Repository
+            </h1>
+            <p class="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto">
+                A collection of modern, single-file HTML, CSS, and JavaScript animation templates designed for web projects.
+            </p>
+        </header>
+
+        <!-- Main Templates Grid -->
+        <main class="max-w-6xl w-full px-4">
+            <h2 class="text-3xl font-bold text-white mb-6 border-b border-gray-700 pb-2">
+                Available Animations
+            </h2>
+
+            <div id="animation-links" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- TEMPLATE LINK 1: Dynamic Line Draw -->
+                <a href="./dynamic_line.html" class="animation-card">
+                    <div class="p-6 rounded-xl bg-gray-800/80 hover:bg-gray-700/80 transition duration-300 border border-gray-700 hover:border-cyan-400 shadow-lg">
+                        <h3 class="text-2xl font-semibold text-cyan-300 mb-2">Dynamic Line Draw</h3>
+                        <p class="text-gray-400">A clean SVG animation demonstrating paths being drawn dynamically.</p>
+                        <span class="mt-3 inline-block text-sm font-medium text-gray-500">
+                            Path: <code class="text-gray-300">/dynamic_line.html</code>
+                        </span>
+                    </div>
+                </a>
+
+                <!-- TEMPLATE LINK 2: Particle Field -->
+                <a href="./particle_field.html" class="animation-card">
+                    <div class="p-6 rounded-xl bg-gray-800/80 hover:bg-gray-700/80 transition duration-300 border border-gray-700 hover:border-purple-400 shadow-lg">
+                        <h3 class="text-2xl font-semibold text-purple-300 mb-2">Interactive Particle Field</h3>
+                        <p class="text-gray-400">A canvas animation featuring responsive, connected particles.</p>
+                        <span class="mt-3 inline-block text-sm font-medium text-gray-500">
+                            Path: <code class="text-gray-300">/particle_field.html</code>
+                        </span>
+                    </div>
+                </a>
+
+                <!-- TEMPLATE LINK 3: Placeholder for future animation -->
+                <div class="p-6 rounded-xl bg-gray-900/50 border border-dashed border-gray-600/50 text-center flex flex-col justify-center items-center h-full">
+                    <svg class="w-10 h-10 text-gray-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p class="text-gray-500 font-medium">Add New Animation Here</p>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Footer for context -->
+        <footer class="mt-12 py-6 text-center text-sm text-gray-500 border-t border-gray-800 w-full max-w-6xl">
+            <p>Hosted on <span class="text-cyan-400">truetoreview/Tools</span> GitHub Repository.</p>
+        </footer>
+
+    </div>
+</body>
+  </html>
+      
