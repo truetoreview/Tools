@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>মেয়েদের জন্য ৫টি কাজ — অ্যানিমেশন প্রেজেন্টেশন</title>
+<style>
+  :root{
+    --bg:#0f1724;
+    --card:#071023;
+    --accent:#f6b042;
+    --muted:#9aa7b2;
+    --glass: rgba(255,255,255,0.04);
+    --white: #ffffff;
+    --ease: cubic-bezier(.2,.9,.23,1);
+  }
+  html,body{height:100%;margin:0;font-family: "Segoe UI", Roboto, "Noto Sans Bengali", system-ui, sans-serif;background:linear-gradient(180deg,var(--bg) 0%, #071024 100%);color:var(--white);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1100px;margin:28px auto;padding:20px;display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start}
+  .stage{
+    position:relative;min-height:620px;border-radius:12px;overflow:hidden;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    box-shadow:0 6px 30px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03);
+  }
+  /* video layer */
+  .stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.55) saturate(.95);z-index:0}
+  /* dark overlay to make text readable */
+  .stage::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.6));z-index:1}
+  /* slide container on top */
+  .slide{
+    position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;pointer-events:none;
+  }
+  .card{
+    width:min(820px,92%);background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border-radius:12px;padding:28px;box-shadow:0 10px 30px rgba(2,6,23,0.6);
+    border:1px solid rgba(255,255,255,0.04);backdrop-filter: blur(6px);
+    display:grid;grid-template-columns:120px 1fr;gap:20px;align-items:center;
+  }
+  .icon{
+    width:120px;height:120px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#f36f6f);display:grid;place-items:center;font-size:48px;font-weight:700;
+    transform:translateY(20px) scale(.9);opacity:0;
+  }
+  .meta h2{margin:0;font-size:22px;letter-spacing:.2px}
+  .meta p{margin:8px 0 0;color:var(--muted);line-height:1.5}
+  .badge{display:inline-block;margin-top:12px;padding:6px 10px;border-radius:999px;background:var(--glass);color:var(--muted);font-size:13px}
+  /* controls panel */
+  .controls{padding:18px;border-radius:12px;background:linear-gradient(180deg,#051021 0%, #061423 100%);
+    border:1px solid rgba(255,255,255,0.03);box-shadow:0 6px 20px rgba(2,6,23,0.5)}
+  .controls h3{margin:0 0 6px;font-size:18px}
+  .controls p{margin:0 0 12px;color:var(--muted);font-size:13px}
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .btn{
+    appearance:none;border:0;padding:10px 14px;border-radius:8px;background:#0b2032;color:var(--white);cursor:pointer;font-weight:600;
+    transition:transform .18s var(--ease), box-shadow .18s var(--ease);
+  }
+  .btn:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.45)}
+  .btn.primary{background:var(--accent);color:#08101a}
+  .small{font-size:13px;padding:8px 10px}
+  .progress{height:8px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden;margin-top:10px}
+  .progress > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#f36f6f);transition:width .6s linear}
+  /* per-slide special visuals */
+  /* animation entry classes (JS toggles these) */
+  .in-left{animation:enterLeft .7s var(--ease) forwards}
+  .in-scale{animation:enterScale .7s var(--ease) forwards}
+  .in-fade{animation:enterFade .6s var(--ease) forwards}
+  .in-zoom{animation:enterZoom .8s var(--ease) forwards}
+  .in-drop{animation:enterDrop .8s var(--ease) forwards}
+  @keyframes enterLeft{from{transform:translateX(-40px);opacity:0}to{transform:none;opacity:1}}
+  @keyframes enterScale{from{transform:scale(.86) translateY(6px);opacity:0}to{transform:none;opacity:1}}
+  @keyframes enterFade{from{opacity:0}to{opacity:1}}
+  @keyframes enterZoom{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes enterDrop{from{transform:translateY(-30px) scale(.96);opacity:0}to{transform:none;opacity:1}}
+  /* little decorative elements */
+  .pulse-heart{width:76px;height:76px;border-radius:18px;background:linear-gradient(135deg,#ff7b8a,#ffb08d);display:grid;place-items:center;box-shadow:0 8px 30px rgba(255,110,110,0.12)}
+  .pulse-heart.animated{animation:heartPulse 1.6s infinite}
+  @keyframes heartPulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+  /* typewriter for quote */
+  .quote{font-style:italic;color:var(--muted);margin-top:10px;min-height:48px;white-space:pre-line}
+  .typewriter{border-right:2px solid rgba(255,255,255,0.12);padding-right:6px;animation:cursor 900ms steps(1) infinite}
+  @keyframes cursor{50%{border-color:transparent}100%{border-color:rgba(255,255,255,0.12)}}
+  /* responsive */
+  @media (max-width:920px){
+    .wrap{grid-template-columns:1fr; padding:14px}
+    .controls{order:2;margin-top:12px}
+  }
+  /* accessibility focus */
+  .btn:focus{outline:3px solid rgba(246,176,66,0.22);outline-offset:2px}
+  /* footer small */
+  .meta small{display:block;margin-top:8px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap" role="application" aria-label="Jannat 5 presentation">
+  <main class="stage" id="stage" aria-live="polite">
+    <!-- Video placeholders: replace src with your stock footage URLs (mp4/webm) -->
+    <video id="bg0" src="" muted playsinline preload="metadata" loop></video> <!-- slide 1 -->
+    <video id="bg1" src="" muted playsinline preload="metadata" loop style="display:none"></video> <!-- slide 2 -->
+    <video id="bg2" src="" muted playsinline preload="metadata" loop style="display:none"></video> <!-- slide 3 -->
+    <video id="bg3" src="" muted playsinline preload="metadata" loop style="display:none"></video> <!-- slide 4 -->
+    <video id="bg4" src="" muted playsinline preload="metadata" loop style="display:none"></video> <!-- slide 5 -->
+
+    <!-- Slides -->
+    <section class="slide" id="slide0" aria-hidden="false">
+      <div class="card">
+        <div class="icon" id="icon0">🕌</div>
+        <div class="meta">
+          <h2>১) পাঁচ ওয়াক্ত নামাজ কায়েম করা</h2>
+          <p>নামাজ হলো ইমানের প্রধান প্রকাশ। প্রতিদিন নিয়মিত নামাজ একজন মেয়েকে আল্লাহর নৈকট্যে নিয়ে যায়।</p>
+          <div class="badge">ফোকাস: নিয়মিততা</div>
+          <small>আপনার ভিডিওতে: নামাজ বা সজদার স্টক ক্লিপ দেখান।</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide1" aria-hidden="true" style="display:none">
+      <div class="card">
+        <div class="icon" id="icon1">🌙</div>
+        <div class="meta">
+          <h2>২) রমজানের রোযা রাখা</h2>
+          <p>রোযা আত্মসংযম শেখায়, নেকিবৃত্তি বাড়ায় এবং হারাম থেকে বিরত থাকতে অনুপ্রাণিত করে।</p>
+          <div class="badge">ফোকাস: ধৈর্য্য ও তাকওয়া</div>
+          <small>আপনার ভিডিওতে: ইফতার/সুহুর/সাধুক্ষণির স্টক ক্লিপ ব্যবহার করুন।</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide2" aria-hidden="true" style="display:none">
+      <div class="card">
+        <div class="icon" id="icon2">🧕</div>
+        <div class="meta">
+          <h2>৩) হায়া ও পবিত্রতা রক্ষা করা</h2>
+          <p>লজ্জাশীলতা ও সংযম একজন নারীর সবচেয়ে সুন্দর বৈশিষ্ট্য — এটি তাকে গোনাহ থেকে বাঁচায়।</p>
+          <div class="badge">ফোকাস: পরিবেশ ও সতর্কতা</div>
+          <small>আপনার ভিডিওতে: সৌম্য পোর্ট্রেট, সম্মানজনক আলাপের ক্লিপ ব্যবহার করুন।</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide3" aria-hidden="true" style="display:none">
+      <div class="card">
+        <div class="icon pulse-heart" id="icon3">❤</div>
+        <div class="meta">
+          <h2>৪) স্বামীর সাথে ভদ্রতা ও আনুগত্য</h2>
+          <p>পরিবারকে শান্তি ও সমতা দেওয়া—এটাই দাম্পত্য জীবনের সৌন্দর্য, এবং এর সাওয়াবও বড়।</p>
+          <div class="badge">ফোকাস: সদাচরণ</div>
+          <small>আপনার ভিডিওতে: দাম্পত্য-মুহূর্ত/পারিবারিক অন্য সহায়ক ক্লিপ দেখান।</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide4" aria-hidden="true" style="display:none">
+      <div class="card">
+        <div class="icon" id="icon4">🕊️</div>
+        <div class="meta">
+          <h2>৫) দুর্দশা ধৈর্যের সাথে সহ্য করা</h2>
+          <p>সফল ধৈর্য্য আল্লাহর নিকট উত্তম মর্যাদা দেয়; ব্যথা সহ্য করেও আল্লাহর প্রতি দৃঢ় থাকা জান্নাতের পথ।</p>
+          <div class="badge">ফোকাস: তাওয়াক্কুল</div>
+          <div class="quote" id="quote">"আল্লাহ যে কষ্ট দেয় তার সঙ্গে রইলে মহান প্রতিদান আছে..."</div>
+          <small>আপনার ভিডিওতে: ধীর গতির পরিবারের ক্লিপ / বন্ধুত্বপূর্ণ সহায়তার ক্লিপ ব্যবহার করুন।</small>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <aside class="controls" aria-label="controls">
+    <h3>অ্যানিমেশন কন্ট্রোল</h3>
+    <p>প্রতিটি ক্লিকে পরবর্তী অ্যানিমেশন দেখাবে। ভিডিও স্থাপন করুন পরে রেকর্ড করুন।</p>
+
+    <div class="btnrow" role="toolbar" aria-label="play controls">
+      <button class="btn" id="prevBtn" title="Previous (Left Arrow)">◀ Prev</button>
+      <button class="btn primary" id="nextBtn" title="Next (Right Arrow)">Next ▶</button>
+      <button class="btn small" id="autoBtn" title="Auto play">Auto Play: Off</button>
+      <button class="btn small" id="resetBtn" title="Reset to first">Reset</button>
+    </div>
+
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <label style="font-size:13px;color:var(--muted)">Slide:</label>
+      <div id="slideIndex" style="font-weight:700">1 / 5</div>
+    </div>
+
+    <div class="progress" aria-hidden="true" style="margin-top:12px">
+      <i id="progBar" style="width:20%"></i>
+    </div>
+
+    <hr style="border:none;height:1px;background:rgba(255,255,255,0.03);margin:14px 0" />
+
+    <div style="font-size:13px;color:var(--muted)">
+      <strong>স্টক ফুটেজ বসান এখানে:</strong>
+      <ol style="padding-left:18px;margin:8px 0 0;color:var(--muted)">
+        <li>slide 1 → &lt;video id="bg0" src="path/to/prayer.mp4"&gt;</li>
+        <li>slide 2 → &lt;video id="bg1" src="path/to/ramadan.mp4"&gt;</li>
+        <li>slide 3 → &lt;video id="bg2" src="path/to/modesty.mp4"&gt;</li>
+        <li>slide 4 → &lt;video id="bg3" src="path/to/family.mp4"&gt;</li>
+        <li>slide 5 → &lt;video id="bg4" src="path/to/patience.mp4"&gt;</li>
+      </ol>
+      <p style="margin-top:10px;color:var(--muted)">প্রশ্ন: রেকর্ড করবেন full-screen এ — ভিডিওতে sound দরকার না; background ভিডিওগুলো muted রাখুন।</p>
+    </div>
+  </aside>
+</div>
+
+<script>
+/* Presentation logic: sequence slides and animate elements.
+   - No external libs
+   - Replace video src attributes with your files (mp4/webm)
+   - Controls: Next, Prev, Auto Play, Reset
+*/
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const videos = [document.getElementById('bg0'),document.getElementById('bg1'),document.getElementById('bg2'),document.getElementById('bg3'),document.getElementById('bg4')];
+  const icons = [document.getElementById('icon0'),document.getElementById('icon1'),document.getElementById('icon2'),document.getElementById('icon3'),document.getElementById('icon4')];
+  const quote = document.getElementById('quote');
+  const nextBtn = document.getElementById('nextBtn'), prevBtn = document.getElementById('prevBtn'), autoBtn = document.getElementById('autoBtn'), resetBtn = document.getElementById('resetBtn');
+  const prog = document.getElementById('progBar'), slideIndexEl = document.getElementById('slideIndex');
+  let idx = 0, auto = false, autoTimer = null;
+  const total = slides.length;
+
+  // initial setup: ensure only first video visible and playing (if src present)
+  function showVideo(i){
+    videos.forEach((v,j)=> {
+      if(!v) return;
+      if(j===i){
+        v.style.display = ''; v.currentTime = 0;
+        // attempt to play if src present
+        if(v.getAttribute('src')){ v.play().catch(()=>{/*autoplay blocked, ok*/}); }
+      } else {
+        v.style.display = 'none';
+        try{ v.pause(); }catch(e){}
+      }
+    });
+  }
+
+  // show slide index and progress
+  function updateProgress(){
+    slideIndexEl.textContent = `${idx+1} / ${total}`;
+    prog.style.width = `${((idx+1)/total)*100}%`;
+  }
+
+  // animate current slide
+  function animateSlide(i){
+    slides.forEach((s,j)=> {
+      if(j===i){
+        s.style.display = ''; s.setAttribute('aria-hidden','false');
+        // reset card children animations
+        const card = s.querySelector('.card');
+        const icon = s.querySelector('.icon');
+        const meta = s.querySelector('.meta');
+        // choose animation per slide
+        icon.classList.remove('in-left','in-scale','in-fade','in-zoom','in-drop');
+        meta.classList.remove('in-left','in-scale','in-fade','in-zoom','in-drop');
+        void icon.offsetWidth; void meta.offsetWidth; // reflow to restart animations
+
+        switch(i){
+          case 0:
+            icon.classList.add('in-left'); meta.classList.add('in-scale');
+            break;
+          case 1:
+            icon.classList.add('in-zoom'); meta.classList.add('in-left');
+            break;
+          case 2:
+            icon.classList.add('in-drop'); meta.classList.add('in-fade');
+            break;
+          case 3:
+            icon.classList.add('in-scale'); meta.classList.add('in-zoom');
+            // pulse heart
+            const h = icon.closest('.card').querySelector('.pulse-heart');
+            if(h) h.classList.add('animated');
+            break;
+          case 4:
+            icon.classList.add('in-fade'); meta.classList.add('in-drop');
+            if(quote) typeWriter(quote, '"আল্লাহ যে কষ্ট দেয়, তা নির্দ্বিধায় তাঁর কাছে সওয়াবের রাস্তা খুলে দেয়..."', 25);
+            break;
+        }
+      } else {
+        s.style.display = 'none'; s.setAttribute('aria-hidden','true');
+      }
+    });
+  }
+
+  // typewriter effect for quote (non-blocking)
+  function typeWriter(node, text, speed){
+    if(!node) return;
+    node.textContent = '';
+    node.classList.add('typewriter');
+    let i = 0;
+    const t = setInterval(()=>{
+      node.textContent += text.charAt(i);
+      i++;
+      if(i >= text.length){ clearInterval(t); node.classList.remove('typewriter'); }
+    }, speed);
+  }
+
+  function goTo(index){
+    if(index < 0) index = 0;
+    if(index >= total) index = total-1;
+    idx = index;
+    showVideo(idx);
+    animateSlide(idx);
+    updateProgress();
+  }
+
+  // next / prev handlers
+  nextBtn.addEventListener('click', ()=> {
+    if(idx < total-1) goTo(idx+1);
+    else { /* loop to start */ goTo(0); }
+    if(auto) restartAuto();
+  });
+  prevBtn.addEventListener('click', ()=> {
+    if(idx > 0) goTo(idx-1); else goTo(total-1);
+    if(auto) restartAuto();
+  });
+
+  resetBtn.addEventListener('click', ()=> { goTo(0); if(auto) restartAuto(); });
+
+  autoBtn.addEventListener('click', ()=> {
+    auto = !auto; autoBtn.textContent = `Auto Play: ${auto? 'On':'Off'}`; if(auto) startAuto(); else stopAuto();
+  });
+
+  // keyboard navigation
+  window.addEventListener('keydown', (e)=>{
+    if(e.key === 'ArrowRight') nextBtn.click();
+    if(e.key === 'ArrowLeft') prevBtn.click();
+    if(e.key === ' ') { e.preventDefault(); autoBtn.click(); }
+  });
+
+  function startAuto(){
+    stopAuto();
+    autoTimer = setInterval(()=> {
+      if(idx < total-1) goTo(idx+1); else goTo(0);
+    }, 4500); // 4.5s per slide
+  }
+  function stopAuto(){ if(autoTimer) { clearInterval(autoTimer); autoTimer=null; } }
+  function restartAuto(){ stopAuto(); startAuto(); }
+
+  // initial
+  goTo(0);
+
+  // Accessibility: announce slide changes using aria-live is handled by main[aria-live]
+  // Notes to user in console
+  console.info("Presentation ready. Replace <video id='bgX' src='...'> with your stock video paths. Play muted for screen recording.");
+})();
+</script>
+</body>
+  </html>
+      
