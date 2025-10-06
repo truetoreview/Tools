@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .converter {
+            margin: 20px 0;
+        }
+        input {
+            margin-right: 10px;
+        }
+        .result {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Unit Converter</h1>
+
+    <div class="converter">
+        <h3>Centimeters to Inches</h3>
+        <input type="number" id="cm" placeholder="Centimeters">
+        <button onclick="convertCmToInches()">Convert</button>
+        <div class="result" id="cmResult"></div>
+    </div>
+
+    <div class="converter">
+        <h3>Kilograms to Pounds</h3>
+        <input type="number" id="kg" placeholder="Kilograms">
+        <button onclick="convertKgToPounds()">Convert</button>
+        <div class="result" id="kgResult"></div>
+    </div>
+
+    <div class="converter">
+        <h3>Celsius to Fahrenheit</h3>
+        <input type="number" id="celsius" placeholder="Celsius">
+        <button onclick="convertCelsiusToFahrenheit()">Convert</button>
+        <div class="result" id="celsiusResult"></div>
+    </div>
+
+    <script>
+        function convertCmToInches() {
+            const cm = document.getElementById('cm').value;
+            const inches = cm / 2.54;
+            document.getElementById('cmResult').innerText = `${cm} cm = ${inches.toFixed(2)} inches`;
+        }
+
+        function convertKgToPounds() {
+            const kg = document.getElementById('kg').value;
+            const pounds = kg * 2.20462;
+            document.getElementById('kgResult').innerText = `${kg} kg = ${pounds.toFixed(2)} pounds`;
+        }
+
+        function convertCelsiusToFahrenheit() {
+            const celsius = document.getElementById('celsius').value;
+            const fahrenheit = (celsius * 9/5) + 32;
+            document.getElementById('celsiusResult').innerText = `${celsius} °C = ${fahrenheit.toFixed(2)} °F`;
+        }
+    </script>
+</body>
+</html>
